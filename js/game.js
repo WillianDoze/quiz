@@ -61,7 +61,7 @@ function gerarPerguntas(maxPerguntas){
         //$("#resp3").html(resp0)
     */
         //Embaralhar as respostas
-        var container = $("#respostas");
+        var container = $("#resposta");
         var botoes = container.children()
         
         for(var i = 1; i < botoes.length;i++){
