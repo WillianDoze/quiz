@@ -6,23 +6,23 @@ let pergfeitas = []
 //Perguntas do jogo
 const perguntas = [
     {
-        pergunta: "Qual dessas linguagens não é considerada uma linguagem de programação?",
-        resposta: ["PHP", "JavaScript", "C++", "HTML"],
+        perguntas: "Qual dessas linguagens não é considerada uma linguagem de programação?",
+        respostas: ["PHP", "JavaScript", "C++", "HTML"],
         correta: "resp3"
     }, 
     {
-        pergunta: "Qual pais ganhou mais copa do mundo?",
-        resposta: ["Brasil", "Holanda", "França", "Argentina"],
+        perguntas: "Qual pais ganhou mais copa do mundo?",
+        respostas: ["Brasil", "Holanda", "França", "Argentina"],
         correta: "resp0"
     },
     {
-        pergunta: "Quando o Brasil foi descoberto?",
-        resposta: ["Quando tiraram o cobertor", "1500", "Nunca foi", "1657"],
+        perguntas: "Quando o Brasil foi descoberto?",
+        respostas: ["Quando tiraram o cobertor", "1500", "Nunca foi", "1657"],
         correta: "resp1"
     },
     {
-        pergunta: "Quantas vezes o Brasil foi campeão do mundo?",
-        resposta: ["Cinco(5)", "Seis(6)", "Oito(8)", "Quatro(4)"],
+        perguntas: "Quantas vezes o Brasil foi campeão do mundo?",
+        respostas: ["Cinco(5)", "Seis(6)", "Oito(8)", "Quatro(4)"],
         correta: "resp0"
     },
 ]
@@ -37,7 +37,7 @@ function gerarPerguntas(maxPerguntas){
     if(!pergfeitas.includes(aleatorio)){
         pergfeitas.push(aleatorio)
 
-        var p_selecionada = perguntas[aleatorio].pergunta;
+        var p_selecionada = perguntas[aleatorio].perguntas;
         console.log(p_selecionada)
 
         //Pergunta vinda do sorteio
@@ -47,25 +47,25 @@ function gerarPerguntas(maxPerguntas){
         //Respostas
 
         for (var i=0; i<4; i++){
-            $("#resp" + i).html(perguntas[aleatorio].resposta[i])
+            $("#resp" + i).html(perguntas[aleatorio].respostas[i])
         }
-/*
-        var resp0 = perguntas[aleatorio].respostas[0]
-        var resp1 = perguntas[aleatorio].respostas[1]
-        var resp2 = perguntas[aleatorio].respostas[2]
-        var resp3 = perguntas[aleatorio].respostas[3]
 
-        $("#resp0").html(resp3)
-        $("#resp1").html(resp0)
-        $("#resp2").html(resp1)
-        $("#resp3").html(resp0)
-*/
+        /*var resp0 = perguntas[aleatorio].respostas[0]
+        //var resp1 = perguntas[aleatorio].respostas[1]
+        //var resp2 = perguntas[aleatorio].respostas[2]
+        //var resp3 = perguntas[aleatorio].respostas[3]
+
+        //$("#resp0").html(resp3)
+        //$("#resp1").html(resp0)
+        //$("#resp2").html(resp1)
+        //$("#resp3").html(resp0)
+    */
         //Embaralhar as respostas
-        var container = $("#resposta");
+        var container = $("#respostas");
         var botoes = container.children()
         
         for(var i = 1; i < botoes.length;i++){
-            container.append(botoes.eq(Math.floor(Math.random)))
+            container.append(botoes.eq(Math.floor(Math.random() * botoes.length)))
         }
     }else{
         console.log("A pergunta já foi feita. Sorteando nova pergunta....")
@@ -73,13 +73,21 @@ function gerarPerguntas(maxPerguntas){
             return gerarPerguntas(maxPerguntas)
         }else{
             console.log("Acabaram as perguntas!")
-        }
+            function gameOver(){
+                $("#quiz").addClass("oculto")
+                $("#mensagem").html("Parabéns você acertou todas!!!")
+                $("#status").removeClass("oculto")
+            }
+         }
     }
 }
 
 $('.resposta').click(function(){
-    function resetaBotoes()
+    if($("#quiz").attr('data-status')!=='travado'){
+    resetaBotoes();
+
     $(this).addClass('selecionada')
+    }
 });
 
 $("#confirm").click(function(){
@@ -95,32 +103,35 @@ $("#confirm").click(function(){
 
             if(respCerta == respostaEscolhida){
                 alert('Acertoooou')
-                console.log('Acertoooou')
                 proximapergunta()
             }else{
-                alert('Errooooouuu!!!')
                 console.log('Errooooouuu!!!')
+                $("#quiz").attr('data-status', 'travado')
+                $("#confirm").addClass('oculto')
                 $("#" + respCerta).addClass("correta");
                 $("#" + respostaEscolhida).removeClass("selecionada");
                 $("#" + respostaEscolhida).addClass("selecionada");
                 setTimeout(function(){
-                    newGame()
-                }, 4000)
-
+                    gameOver()
+                }, 3500)
             }
         }
     })
-})
+});
 
 function newGame(){
+    $("#confirm").removeClass('oculto')
+    $("#quiz").attr('data-status', 'ok');
     pergfeitas = []
     resetaBotoes()
     gerarPerguntas(qtdPerguntas)
+    $("#quiz").removeClass("oculto")
+    $("#status").addClass("oculto")
 }
 
 function proximapergunta(){
 
-    function resetaBotoes()
+    resetaBotoes()
     gerarPerguntas(qtdPerguntas)
 }
 
@@ -136,5 +147,15 @@ function resetaBotoes(){
             $(this).removeClass('errada')
         }
         
-    })
+    });
 }
+function gameOver(){
+    $("#quiz").addClass("oculto")
+    $("#mensagem").html("Game Over")
+    $("#status").removeClass("oculto")
+}
+
+$('#novoJogo').click(function(){
+    newGame();
+});
+
